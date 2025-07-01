@@ -1,0 +1,27 @@
+if [ $# -lt 1 ]
+then
+  echo "Usage: phone searchfor [...searchfor]"
+  echo "(You didn't tell me what you want to search for.)"
+  exit 0
+fi
+
+first=1
+for arg in "$@"
+  do  
+    if [ $first -eq 1 ]
+    then  
+      reg="$arg"
+      first=0
+    else  
+      reg+="|$arg"  
+    fi  
+done  
+reg="($reg)"
+
+while IFS= read -r line
+do
+  if echo "$line" | egrep -q "$reg"
+  then
+    echo "$line" | awk -f display.awk
+  fi
+done < "mydata.txt"
